@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizmDocRestClient", "PrizmDocRestClient\PrizmDocRestClient.csproj", "{DC229617-BB15-4A6C-9D97-B3DA0D8A6301}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrizmDocRestClient.Tests", "PrizmDocRestClient.Tests\PrizmDocRestClient.Tests.csproj", "{D6C99E43-7649-4DE3-B6DF-FCF4D88EA386}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53AB7981-6D71-42F6-8743-1C6EC1130372}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC229617-BB15-4A6C-9D97-B3DA0D8A6301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC229617-BB15-4A6C-9D97-B3DA0D8A6301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC229617-BB15-4A6C-9D97-B3DA0D8A6301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC229617-BB15-4A6C-9D97-B3DA0D8A6301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6C99E43-7649-4DE3-B6DF-FCF4D88EA386}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6C99E43-7649-4DE3-B6DF-FCF4D88EA386}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6C99E43-7649-4DE3-B6DF-FCF4D88EA386}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6C99E43-7649-4DE3-B6DF-FCF4D88EA386}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C6AE263-93EB-4CD6-9234-0266C33456EE}
+	EndGlobalSection
+EndGlobal
