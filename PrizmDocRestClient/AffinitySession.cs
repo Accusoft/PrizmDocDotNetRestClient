@@ -62,7 +62,7 @@ namespace Accusoft.PrizmDoc.Net.Http
 
                 stateAndResponse = await GetCurrentProcessStateAndHttpResponseMessage(processResource);
                 state = stateAndResponse.Item1;
-                
+
                 firstRequest = false;
             } while (state == "processing");
 
@@ -151,13 +151,11 @@ namespace Accusoft.PrizmDoc.Net.Http
 
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
-            // If we have an affinity token for this session, set it in the request.
-            if (AffinityToken != null)
+            // If we have an affinity token for this session
+            // and the request does not have a custom affinity token set,
+            // set the affinity token for the request.
+            if (AffinityToken != null && !request.Headers.Contains("Accusoft-Affinity-Token"))
             {
-                if (request.Headers.Contains("Accusoft-Affinity-Token"))
-                {
-                    request.Headers.Remove("Accusoft-Affinity-Token");
-                }
                 request.Headers.Add("Accusoft-Affinity-Token", AffinityToken);
             }
 
@@ -188,8 +186,8 @@ namespace Accusoft.PrizmDoc.Net.Http
             var response = await PrizmDocRestClient._httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
             // If we don't have an affinity token for this session, look for an affinity token in the response JSON.
-            if (AffinityToken == null && 
-                response.Content.Headers.ContentType != null && 
+            if (AffinityToken == null &&
+                response.Content.Headers.ContentType != null &&
                 response.Content.Headers.ContentType.MediaType == "application/json") {
                 var json = await response.Content.ReadAsStringAsync();
 

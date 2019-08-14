@@ -180,5 +180,64 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 Assert.IsFalse(response.RequestMessage.Headers.Contains("Accusoft-Affinity-Token"), "An Accusoft-Affinity-Token header was incorrectly sent in the third request.");
             }
         }
+
+        [TestMethod]
+        public async Task The_programmer_can_override_the_affinity_token_if_they_need_to()
+        {
+            const string SESSION_AFFINITY_TOKEN = "session-affinity-token";
+            const string CUSTOM_AFFINITY_TOKEN = "custom-affinity-token";
+
+            var responseWithAffinityToken = Response.Create()
+                        .WithStatusCode(200)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{ \"id\": 123, \"affinityToken\": \"" + SESSION_AFFINITY_TOKEN + "\" }");
+
+            mockServer
+                .Given(Request.Create().WithPath("/wat").UsingPost())
+                .RespondWith(responseWithAffinityToken);
+
+            mockServer
+                .Given(Request.Create().WithPath("/wat/123").UsingGet())
+                .RespondWith(responseWithAffinityToken);
+
+            var session = client.CreateAffinitySession();
+
+            string originalAffinityToken = null;
+
+            // First request
+            using (var request = new HttpRequestMessage(HttpMethod.Post, "/wat"))
+            using (var response = await session.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                Assert.IsFalse(response.RequestMessage.Headers.Contains("Accusoft-Affinity-Token"), "An Accusoft-Affinity-Token header was incorrectly sent in the first request.");
+
+                var json = await response.Content.ReadAsStringAsync();
+                var obj = JObject.Parse(json);
+                originalAffinityToken = (string)obj["affinityToken"];
+                Assert.AreEqual(SESSION_AFFINITY_TOKEN, originalAffinityToken, "The mock server did not respond with the affinityToken value we expected. Something is wrong with this test.");
+            }
+
+            // Second request
+            using (var request = new HttpRequestMessage(HttpMethod.Get, "/wat/123"))
+            using (var response = await session.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                Assert.IsTrue(response.RequestMessage.Headers.Contains("Accusoft-Affinity-Token"), "Having already received an affinityToken in the response to the first request, the second request failed to include an Accusoft-Affinity-Token header.");
+                Assert.AreEqual(SESSION_AFFINITY_TOKEN, response.RequestMessage.Headers.GetValues("Accusoft-Affinity-Token").FirstOrDefault(), "Having already received an affinityToken in the response to the first request, the second request included an Accusoft-Affinity-Token header but did not set it to the correct value.");
+            }
+
+            // Third request: Use a custom affinity token for this request
+            using (var request = new HttpRequestMessage(HttpMethod.Get, "/wat/123"))
+            {
+                request.Headers.Add("Accusoft-Affinity-Token", CUSTOM_AFFINITY_TOKEN);
+
+                using (var response = await session.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    Assert.IsTrue(response.RequestMessage.Headers.Contains("Accusoft-Affinity-Token"), "Having already received an affinityToken in the response to the first request, the third request failed to include an Accusoft-Affinity-Token header.");
+                    Assert.AreEqual(CUSTOM_AFFINITY_TOKEN, response.RequestMessage.Headers.GetValues("Accusoft-Affinity-Token").FirstOrDefault(), "Having already received an affinityToken in the response to the first request, the third request included an Accusoft-Affinity-Token header but did not set it to the correct value.");
+                }
+            }
+        }
     }
 }
