@@ -92,7 +92,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
         public async Task GetFinalProcessStatusAsync_uses_an_initial_polling_delay_of_500ms_and_then_doubles_the_delay_between_each_poll_until_reaching_a_max_delay_of_8000ms()
         {
             int responsesSent = 0;
-            
+
             mockServer
                 .Given(Request.Create().WithPath("/wat/123").UsingGet())
                 .RespondWith(Response.Create()
@@ -122,7 +122,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
             using (var response = await session.GetFinalProcessStatusAsync("/wat/123"))
             {
                 response.EnsureSuccessStatusCode();
-            }                
+            }
 
             var requests = mockServer.LogEntries.Select(x => x.RequestMessage).ToList();
             var delaysBetweenRequests = new List<TimeSpan>();
@@ -131,13 +131,15 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 delaysBetweenRequests.Add(requests[i].DateTime - requests[i - 1].DateTime);
             }
 
-            Assert.AreEqual(500.0, delaysBetweenRequests[0].TotalMilliseconds, 250.0);
-            Assert.AreEqual(1000.0, delaysBetweenRequests[1].TotalMilliseconds, 250.0);
-            Assert.AreEqual(2000.0, delaysBetweenRequests[2].TotalMilliseconds, 250.0);
-            Assert.AreEqual(4000.0, delaysBetweenRequests[3].TotalMilliseconds, 250.0);
-            Assert.AreEqual(8000.0, delaysBetweenRequests[4].TotalMilliseconds, 250.0);
-            Assert.AreEqual(8000.0, delaysBetweenRequests[5].TotalMilliseconds, 250.0);
-            Assert.AreEqual(8000.0, delaysBetweenRequests[6].TotalMilliseconds, 250.0);
+            const double ALLOWED_DELTA = 500.0;
+
+            Assert.AreEqual(500.0, delaysBetweenRequests[0].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(1000.0, delaysBetweenRequests[1].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(2000.0, delaysBetweenRequests[2].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(4000.0, delaysBetweenRequests[3].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(8000.0, delaysBetweenRequests[4].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(8000.0, delaysBetweenRequests[5].TotalMilliseconds, ALLOWED_DELTA);
+            Assert.AreEqual(8000.0, delaysBetweenRequests[6].TotalMilliseconds, ALLOWED_DELTA);
         }
 
         [TestMethod]
@@ -153,7 +155,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("You POSTed: Hello world!", await response.Content.ReadAsStringAsync());
-            }                
+            }
         }
 
         [TestMethod]

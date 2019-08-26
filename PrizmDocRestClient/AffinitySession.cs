@@ -42,8 +42,8 @@ namespace Accusoft.PrizmDoc.Net.Http
         {
             Tuple<string, HttpResponseMessage> stateAndResponse;
             string state;
-            const int START_DELAY = 500; // ms = 1/2 second
-            const int MAX_DELAY = 8000; // ms = 5 seconds
+            const int START_DELAY = 500; // ms
+            const int MAX_DELAY = 8000; // ms
 
             var firstRequest = true;
             var delay = START_DELAY;
