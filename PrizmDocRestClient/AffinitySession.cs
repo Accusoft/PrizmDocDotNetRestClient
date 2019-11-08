@@ -23,13 +23,14 @@ namespace Accusoft.PrizmDoc.Net.Http
         /// JSON response is returned with an <c>"affinityToken"</c> value,
         /// this property will be set and "locked" to that value, and the <see cref="AffinitySession">AffinitySession</see>
         /// will ensure that all subsequent HTTP requests include an
-        /// <c>Accuosft-Affinity-Token</c> request header set to this value.
+        /// <c>Accusoft-Affinity-Token</c> request header set to this value.
         /// </summary>
         public string AffinityToken { get; private set; }
 
-        internal AffinitySession(PrizmDocRestClient client)
+        internal AffinitySession(PrizmDocRestClient client, string affinityToken = null)
         {
             this.client = client;
+            this.AffinityToken = affinityToken;
         }
 
         /// <summary>

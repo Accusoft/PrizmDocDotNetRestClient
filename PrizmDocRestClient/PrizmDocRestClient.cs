@@ -11,9 +11,9 @@ namespace Accusoft.PrizmDoc.Net.Http
     {
         // HttpClient should be used as a singleton.
         // See https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netcore-2.0#remarks, which says:
-        // 
-        //    HttpClient is intended to be instantiated once and re-used throughout the life of an application. 
-        //    Instantiating an HttpClient class for every request will exhaust the number of sockets available 
+        //
+        //    HttpClient is intended to be instantiated once and re-used throughout the life of an application.
+        //    Instantiating an HttpClient class for every request will exhaust the number of sockets available
         //    under heavy loads. This will result in SocketException errors.
         //
         // See also https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
@@ -68,9 +68,10 @@ namespace Accusoft.PrizmDoc.Net.Http
         /// <summary>
         /// Creates an <see cref="AffinitySession">AffinitySession</see> which you can use to make HTTP requests.
         /// </summary>
+        /// <param name="affinityToken">Optional existing affinity token which the new affinity session should use.</param>
         /// <returns>A new <see cref="AffinitySession">AffinitySession</see>.</returns>
-        public AffinitySession CreateAffinitySession() {
-            return new AffinitySession(this);
+        public AffinitySession CreateAffinitySession(string affinityToken = null) {
+            return new AffinitySession(this, affinityToken);
         }
     }
 }
