@@ -1,13 +1,20 @@
-# PrizmDocRestClient for .NET
+# PrizmDoc .NET REST Client
 
-**(BETA)** HTTP client designed to simplify interactions with PrizmDoc Server. Specifically:
+HTTP client designed to simplify making REST API calls to PrizmDoc Server.
+Specifically:
 
 1. Automatically handles affinity concerns
 2. Provides a way to easily poll for process completion
 
+_**NOTE:** This is a low-level library intended for people who want to make REST
+API calls themselves. If you just want to use PrizmDoc Server functionality from
+.NET, you probably want the higher-level
+[Accusoft.PrizmDocServerSDK](https://www.nuget.org/packages/Accusoft.PrizmDocServerSDK/)
+package._
+
 ## Installation
 
-Add the [PrizmDocRestClient NuGet package](https://www.nuget.org/packages/PrizmDocRestClient/) to your project.
+Add the [Accusoft.PrizmDocRestClient NuGet package](https://www.nuget.org/packages/Accusoft.PrizmDocRestClient/) to your project.
 
 This will add a new `Accusoft.PrizmDoc.Net.Http` namespace containing the `PrizmDocRestClient` class.
 
@@ -49,23 +56,23 @@ namespace MyApplication
             // chain. The session ensures that all HTTP requests will
             // automatically use the same affinity (be routed to the same
             // PrizmDoc Server machine in the cluster).
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
             string json;
 
             // Create a new work file for the input document
-            using (var inputFileStream = File.OpenRead("input.docx"))
-            using (var response = await session.PostAsync("/PCCIS/V1/WorkFile", new StreamContent(inputFileStream)))
+            using (FileStream inputFileStream = File.OpenRead("input.docx"))
+            using (HttpResponseMessage response = await session.PostAsync("/PCCIS/V1/WorkFile", new StreamContent(inputFileStream)))
             {
                 response.EnsureSuccessStatusCode();
                 json = await response.Content.ReadAsStringAsync();
             }
 
-            var inputWorkFile = JObject.Parse(json);
-            var inputFileId = (string)inputWorkFile["fileId"];
+            JObject inputWorkFile = JObject.Parse(json);
+            string inputFileId = (string)inputWorkFile["fileId"];
 
             // Start a conversion process using the input work file
-            var postContentConvertersJson =
+            string postContentConvertersJson =
 @"{
     ""input"": {
         ""sources"": [
@@ -79,17 +86,17 @@ namespace MyApplication
     }
 }";
 
-            using (var response = await session.PostAsync("/v2/contentConverters", new StringContent(postContentConvertersJson)))
+            using (HttpResponseMessage response = await session.PostAsync("/v2/contentConverters", new StringContent(postContentConvertersJson)))
             {
                 response.EnsureSuccessStatusCode();
                 json = await response.Content.ReadAsStringAsync();
             }
 
-            var process = JObject.Parse(json);
-            var processId = (string)process["processId"];
+            JObject process = JObject.Parse(json);
+            string processId = (string)process["processId"];
 
             // Wait for the process to finish
-            using (var response = await session.GetFinalProcessStatusAsync($"/v2/contentConverters/{processId}"))
+            using (HttpResponseMessage response = await session.GetFinalProcessStatusAsync($"/v2/contentConverters/{processId}"))
             {
                 response.EnsureSuccessStatusCode();
                 json = await response.Content.ReadAsStringAsync();
@@ -104,12 +111,13 @@ namespace MyApplication
             }
 
             // Download the output work file and save it to disk.
-            using (var response = await session.GetAsync($"/PCCIS/V1/WorkFile/{(string)process["output"]["results"][0]["fileId"]}"))
+            string workFileId = (string)process["output"]["results"][0]["fileId"];
+            using (HttpResponseMessage response = await session.GetAsync($"/PCCIS/V1/WorkFile/{workFileId}"))
             {
                 response.EnsureSuccessStatusCode();
 
-                using (var responseBodyStream = await response.Content.ReadAsStreamAsync())
-                using (var outputFileStream = File.OpenWrite("output.pdf"))
+                using (Stream responseBodyStream = await response.Content.ReadAsStreamAsync())
+                using (FileStream outputFileStream = File.OpenWrite("output.pdf"))
                 {
                     await responseBodyStream.CopyToAsync(outputFileStream);
                 }

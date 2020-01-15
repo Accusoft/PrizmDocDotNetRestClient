@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 namespace Accusoft.PrizmDoc.Net.Http
 {
     /// <summary>
-    /// **(BETA)** HTTP client designed to simplify interactions with PrizmDoc Server.
+    /// HTTP client designed to simplify interactions with PrizmDoc Server.
     /// </summary>
     public class PrizmDocRestClient
     {

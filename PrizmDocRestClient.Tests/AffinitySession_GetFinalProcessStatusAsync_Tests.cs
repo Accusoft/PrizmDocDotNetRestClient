@@ -56,7 +56,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                         var headers = new Dictionary<string, WireMockList<string>>();
                         headers.Add("Content-Type", new WireMockList<string>("application/json"));
 
-                        var body = "{ \"processId\": \"123\", \"state\": \"" + (responsesSent < 1 ? "processing" : finalState) + "\" }";
+                        string body = "{ \"processId\": \"123\", \"state\": \"" + (responsesSent < 1 ? "processing" : finalState) + "\" }";
                         responsesSent++;
 
                         return new ResponseMessage
@@ -72,16 +72,16 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                     })
                 );
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
 
-            using (var response = await session.GetFinalProcessStatusAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.GetFinalProcessStatusAsync("/wat/123"))
             {
                 response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var obj = JObject.Parse(json);
-                var stateParsedFromTheReturnValueOfTheFunctionUnderTest = (string)obj["state"];
+                string json = await response.Content.ReadAsStringAsync();
+                JObject obj = JObject.Parse(json);
+                string stateParsedFromTheReturnValueOfTheFunctionUnderTest = (string)obj["state"];
 
                 Assert.AreEqual(finalState, stateParsedFromTheReturnValueOfTheFunctionUnderTest);
             }
@@ -101,7 +101,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                         var headers = new Dictionary<string, WireMockList<string>>();
                         headers.Add("Content-Type", new WireMockList<string>("application/json"));
 
-                        var body = "{ \"processId\": \"123\", \"state\": \"" + (responsesSent < 7 ? "processing" : "complete") + "\" }";
+                        string body = "{ \"processId\": \"123\", \"state\": \"" + (responsesSent < 7 ? "processing" : "complete") + "\" }";
                         responsesSent++;
 
                         return new ResponseMessage
@@ -117,16 +117,16 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                     })
                 );
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.GetFinalProcessStatusAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.GetFinalProcessStatusAsync("/wat/123"))
             {
                 response.EnsureSuccessStatusCode();
             }
 
-            var requests = mockServer.LogEntries.Select(x => x.RequestMessage).ToList();
-            var delaysBetweenRequests = new List<TimeSpan>();
-            for (var i = 1 ; i < requests.Count; i++)
+            List<RequestMessage> requests = mockServer.LogEntries.Select(x => x.RequestMessage).ToList();
+            List<TimeSpan> delaysBetweenRequests = new List<TimeSpan>();
+            for (int i = 1 ; i < requests.Count; i++)
             {
                 delaysBetweenRequests.Add(requests[i].DateTime - requests[i - 1].DateTime);
             }
@@ -149,9 +149,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat").UsingPost())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"You POSTed: {req.Body}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.PostAsync("/wat", new StringContent("Hello world!")))
+            using (HttpResponseMessage response = await session.PostAsync("/wat", new StringContent("Hello world!")))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("You POSTed: Hello world!", await response.Content.ReadAsStringAsync());
@@ -165,9 +165,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingPut())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"You PUT: {req.Body}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.PutAsync("/wat/123", new StringContent("Hi there, friend.")))
+            using (HttpResponseMessage response = await session.PutAsync("/wat/123", new StringContent("Hi there, friend.")))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("You PUT: Hi there, friend.", await response.Content.ReadAsStringAsync());
@@ -181,9 +181,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingDelete())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"Resource deleted: {req.Path}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.DeleteAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.DeleteAsync("/wat/123"))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("Resource deleted: /wat/123", await response.Content.ReadAsStringAsync());

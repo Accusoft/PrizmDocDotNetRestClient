@@ -6,16 +6,16 @@
     <Authors>Accusoft</Authors>
     <Company>Accusoft</Company>
     <Product />
-    <Version>1.0.0-beta.5</Version>
+    <Version>1.0.0</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Copyright>Copyright © 2019 Accusoft Corporation</Copyright>
-    <Description>**(BETA)** HTTP client designed to simplify interactions with PrizmDoc Server. Specifically:
+    <Copyright>Copyright © 2019-2020 Accusoft Corporation</Copyright>
+    <Description>HTTP client designed to simplify interactions with PrizmDoc Server. Specifically:
 
 1. Automatically handles affinity concerns
 2. Provides a way to easily poll for process completion</Description>
     <PackageProjectUrl>https://github.com/Accusoft/PrizmDocRestClientDotNet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Accusoft/PrizmDocRestClientDotNet</RepositoryUrl>
-    <PackageId>PrizmDocRestClient</PackageId>
+    <PackageId>Accusoft.PrizmDocRestClient</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

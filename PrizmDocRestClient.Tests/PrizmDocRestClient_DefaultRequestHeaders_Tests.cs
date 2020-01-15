@@ -52,7 +52,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingDelete())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("DELETE Response"));
 
-            var baseAddress = "http://localhost:" + mockServer.Ports.First();
+            string baseAddress = "http://localhost:" + mockServer.Ports.First();
 
             client = new PrizmDocRestClient(baseAddress)
             {
@@ -63,9 +63,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 }
             };
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
+            using (HttpResponseMessage response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
             {
                 Assert.IsTrue(response.RequestMessage.Headers.Contains("Some-Header"));
                 Assert.AreEqual("An example value", response.RequestMessage.Headers.GetValues("Some-Header").SingleOrDefault());
@@ -73,7 +73,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 Assert.AreEqual("Another example value", response.RequestMessage.Headers.GetValues("Some-Other-Header").SingleOrDefault());
             }
 
-            using (var response = await session.GetAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.GetAsync("/wat/123"))
             {
                 Assert.IsTrue(response.RequestMessage.Headers.Contains("Some-Header"));
                 Assert.AreEqual("An example value", response.RequestMessage.Headers.GetValues("Some-Header").SingleOrDefault());
@@ -81,7 +81,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 Assert.AreEqual("Another example value", response.RequestMessage.Headers.GetValues("Some-Other-Header").SingleOrDefault());
             }
 
-            using (var response = await session.PostAsync("/wat", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PostAsync("/wat", new StringContent("body")))
             {
                 Assert.IsTrue(response.RequestMessage.Headers.Contains("Some-Header"));
                 Assert.AreEqual("An example value", response.RequestMessage.Headers.GetValues("Some-Header").SingleOrDefault());
@@ -89,7 +89,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 Assert.AreEqual("Another example value", response.RequestMessage.Headers.GetValues("Some-Other-Header").SingleOrDefault());
             }
 
-            using (var response = await session.PutAsync("/wat/123", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PutAsync("/wat/123", new StringContent("body")))
             {
                 Assert.IsTrue(response.RequestMessage.Headers.Contains("Some-Header"));
                 Assert.AreEqual("An example value", response.RequestMessage.Headers.GetValues("Some-Header").SingleOrDefault());
@@ -97,7 +97,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 Assert.AreEqual("Another example value", response.RequestMessage.Headers.GetValues("Some-Other-Header").SingleOrDefault());
             }
 
-            using (var response = await session.DeleteAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.DeleteAsync("/wat/123"))
             {
                 Assert.IsTrue(response.RequestMessage.Headers.Contains("Some-Header"));
                 Assert.AreEqual("An example value", response.RequestMessage.Headers.GetValues("Some-Header").SingleOrDefault());

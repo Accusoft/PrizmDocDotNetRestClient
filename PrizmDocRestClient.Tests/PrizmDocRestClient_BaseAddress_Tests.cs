@@ -52,33 +52,33 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingDelete())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("DELETE Response"));
 
-            var baseAddress = "http://localhost:" + mockServer.Ports.First();
+            string baseAddress = "http://localhost:" + mockServer.Ports.First();
 
             client = new PrizmDocRestClient(baseAddress);
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
+            using (HttpResponseMessage response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
             {
                 Assert.AreEqual(baseAddress + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.GetAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.GetAsync("/wat/123"))
             {
                 Assert.AreEqual(baseAddress + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.PostAsync("/wat", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PostAsync("/wat", new StringContent("body")))
             {
                 Assert.AreEqual(baseAddress + "/wat", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.PutAsync("/wat/123", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PutAsync("/wat/123", new StringContent("body")))
             {
                 Assert.AreEqual(baseAddress + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.DeleteAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.DeleteAsync("/wat/123"))
             {
                 Assert.AreEqual(baseAddress + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
@@ -103,34 +103,34 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingDelete())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("DELETE Response"));
 
-            var baseAddressWithoutTrailingSlash = "http://localhost:" + mockServer.Ports.First();
-            var baseAddressWithTrailingSlash = baseAddressWithoutTrailingSlash + "/";
+            string baseAddressWithoutTrailingSlash = "http://localhost:" + mockServer.Ports.First();
+            string baseAddressWithTrailingSlash = baseAddressWithoutTrailingSlash + "/";
 
             client = new PrizmDocRestClient(baseAddressWithTrailingSlash);
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
+            using (HttpResponseMessage response = await session.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/wat/123")))
             {
                 Assert.AreEqual(baseAddressWithoutTrailingSlash + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.GetAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.GetAsync("/wat/123"))
             {
                 Assert.AreEqual(baseAddressWithoutTrailingSlash + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.PostAsync("/wat", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PostAsync("/wat", new StringContent("body")))
             {
                 Assert.AreEqual(baseAddressWithoutTrailingSlash + "/wat", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.PutAsync("/wat/123", new StringContent("body")))
+            using (HttpResponseMessage response = await session.PutAsync("/wat/123", new StringContent("body")))
             {
                 Assert.AreEqual(baseAddressWithoutTrailingSlash + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }
 
-            using (var response = await session.DeleteAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.DeleteAsync("/wat/123"))
             {
                 Assert.AreEqual(baseAddressWithoutTrailingSlash + "/wat/123", response.RequestMessage.RequestUri.ToString());
             }

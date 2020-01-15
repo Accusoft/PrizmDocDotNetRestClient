@@ -10,7 +10,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
 {
     [TestClass]
     public class AffinitySession_HTTP_Verb_Convenience_Methods_tests
-    { 
+    {
         static PrizmDocRestClient client;
         static FluentMockServer mockServer;
 
@@ -43,7 +43,7 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingGet())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody("GET Response"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
             HttpResponseMessage response;
 
@@ -59,9 +59,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat").UsingPost())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"You POSTed: {req.Body}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.PostAsync("/wat", new StringContent("Hello world!")))
+            using (HttpResponseMessage response = await session.PostAsync("/wat", new StringContent("Hello world!")))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("You POSTed: Hello world!", await response.Content.ReadAsStringAsync());
@@ -75,9 +75,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingPut())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"You PUT: {req.Body}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.PutAsync("/wat/123", new StringContent("Hi there, friend.")))
+            using (HttpResponseMessage response = await session.PutAsync("/wat/123", new StringContent("Hi there, friend.")))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("You PUT: Hi there, friend.", await response.Content.ReadAsStringAsync());
@@ -91,9 +91,9 @@ namespace Accusoft.PrizmDoc.Net.Http.Tests
                 .Given(Request.Create().WithPath("/wat/123").UsingDelete())
                 .RespondWith(Response.Create().WithStatusCode(200).WithBody(req => $"Resource deleted: {req.Path}"));
 
-            var session = client.CreateAffinitySession();
+            AffinitySession session = client.CreateAffinitySession();
 
-            using (var response = await session.DeleteAsync("/wat/123"))
+            using (HttpResponseMessage response = await session.DeleteAsync("/wat/123"))
             {
                 response.EnsureSuccessStatusCode();
                 Assert.AreEqual("Resource deleted: /wat/123", await response.Content.ReadAsStringAsync());

@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -46,8 +47,8 @@ namespace Accusoft.PrizmDoc.Net.Http
             const int START_DELAY = 500; // ms
             const int MAX_DELAY = 8000; // ms
 
-            var firstRequest = true;
-            var delay = START_DELAY;
+            bool firstRequest = true;
+            int delay = START_DELAY;
 
             do
             {
@@ -67,13 +68,13 @@ namespace Accusoft.PrizmDoc.Net.Http
                 firstRequest = false;
             } while (state == "processing");
 
-            var response = stateAndResponse.Item2;
+            HttpResponseMessage response = stateAndResponse.Item2;
             return response;
         }
 
         private async Task<Tuple<string, HttpResponseMessage>> GetCurrentProcessStateAndHttpResponseMessage(string processResource)
         {
-            var response = await GetAsync(processResource);
+            HttpResponseMessage response = await GetAsync(processResource);
             response.EnsureSuccessStatusCode();
 
             if (response.Content.Headers.ContentType.MediaType != "application/json")
@@ -85,8 +86,8 @@ namespace Accusoft.PrizmDoc.Net.Http
 
             try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var obj = JObject.Parse(json);
+                string json = await response.Content.ReadAsStringAsync();
+                JObject obj = JObject.Parse(json);
                 state = (string)obj["state"];
             }
             catch
@@ -174,7 +175,7 @@ namespace Accusoft.PrizmDoc.Net.Http
             // Apply the DefaultRequestHeaders.
             if (client.DefaultRequestHeaders != null)
             {
-                foreach (var header in client.DefaultRequestHeaders)
+                foreach (KeyValuePair<string, IEnumerable<string>> header in client.DefaultRequestHeaders)
                 {
                     if (!request.Headers.Contains(header.Key))
                     {
@@ -183,14 +184,14 @@ namespace Accusoft.PrizmDoc.Net.Http
                 }
             }
 
-            // Send the reuqest.
-            var response = await PrizmDocRestClient._httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            // Send the request.
+            HttpResponseMessage response = await PrizmDocRestClient._httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
             // If we don't have an affinity token for this session, look for an affinity token in the response JSON.
             if (AffinityToken == null &&
                 response.Content.Headers.ContentType != null &&
                 response.Content.Headers.ContentType.MediaType == "application/json") {
-                var json = await response.Content.ReadAsStringAsync();
+                string json = await response.Content.ReadAsStringAsync();
 
                 JObject obj;
 
@@ -201,7 +202,7 @@ namespace Accusoft.PrizmDoc.Net.Http
                     return response;
                 }
 
-                var affinityToken = (string)obj["affinityToken"];
+                string affinityToken = (string)obj["affinityToken"];
                 if (affinityToken != null) {
                     AffinityToken = affinityToken;
                 }
