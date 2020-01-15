@@ -6,15 +6,26 @@
     <Authors>Accusoft</Authors>
     <Company>Accusoft</Company>
     <Product />
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>Copyright © 2019-2020 Accusoft Corporation</Copyright>
-    <Description>HTTP client designed to simplify interactions with PrizmDoc Server. Specifically:
+    <Description>
+    PrizmDoc .NET REST Client
 
-1. Automatically handles affinity concerns
-2. Provides a way to easily poll for process completion</Description>
-    <PackageProjectUrl>https://github.com/Accusoft/PrizmDocRestClientDotNet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Accusoft/PrizmDocRestClientDotNet</RepositoryUrl>
+    HTTP client designed to simplify interactions with PrizmDoc Server. Specifically:
+
+    1. Automatically handles affinity concerns
+    2. Provides a way to easily poll for process completion
+
+    NOTE: This is a low-level library intended for people who want to make REST
+    API calls themselves. If you just want to use PrizmDoc Server functionality
+    from .NET, you probably want the higher-level Accusoft.PrizmDocServerSDK
+    package:
+
+    https://www.nuget.org/packages/Accusoft.PrizmDocServerSDK/
+    </Description>
+    <PackageProjectUrl>https://github.com/Accusoft/PrizmDocDotNetRestClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Accusoft/PrizmDocDotNetRestClient</RepositoryUrl>
     <PackageId>Accusoft.PrizmDocRestClient</PackageId>
   </PropertyGroup>
 
